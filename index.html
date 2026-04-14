@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REIS KYC - Dashboard</title>
+  <style>
+    :root {
+      --navy-900: #0f2942;
+      --navy-800: #173754;
+      --navy-700: #204766;
+      --blue-600: #1f7ae0;
+      --blue-500: #2f90ff;
+      --blue-100: #eaf4ff;
+      --cyan-500: #25b7d3;
+      --orange-500: #f39a1f;
+      --green-500: #1fa971;
+      --red-500: #d94b4b;
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --border: #dbe4ee;
+      --text: #1f2d3d;
+      --muted: #66788a;
+      --shadow: 0 8px 24px rgba(16, 42, 67, 0.08);
+      --radius: 16px;
+      --radius-sm: 12px;
+      --transition: 0.2s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .topbar {
+      height: 68px;
+      background: linear-gradient(90deg, var(--navy-900), var(--navy-700));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar-left,
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .burger {
+      width: 20px;
+      height: 14px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .burger span {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #fff;
+      border-radius: 2px;
+    }
+
+    .burger span:nth-child(1) { top: 0; }
+    .burger span:nth-child(2) { top: 6px; }
+    .burger span:nth-child(3) { top: 12px; }
+
+    .brand {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .brand small {
+      font-size: 12px;
+      font-weight: 400;
+      opacity: 0.8;
+      margin-left: 6px;
+    }
+
+    .icon-btn {
+      font-size: 14px;
+      opacity: 0.95;
+      padding: 8px 10px;
+      border-radius: 10px;
+      transition: background var(--transition);
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .page {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 28px 24px 36px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #1e4564, #355c7d);
+      color: #fff;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    .hero p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.88);
+      line-height: 1.6;
+      max-width: 680px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .meta-chip {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: #fff;
+      color: var(--navy-900);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+    }
+
+    .section {
+      margin-bottom: 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .section-subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .kpi-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .kpi-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .kpi-trend {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .trend-up { color: var(--green-500); }
+    .trend-warn { color: var(--orange-500); }
+    .trend-down { color: var(--red-500); }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 24px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-body {
+      padding: 20px;
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .action-card {
+      background: linear-gradient(180deg, #ffffff, #f9fbfe);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      min-height: 210px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .action-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 28px rgba(31, 45, 61, 0.1);
+      border-color: #bfd0e2;
+    }
+
+    .action-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 18px;
+    }
+
+    .icon-blue { background: var(--blue-100); }
+    .icon-cyan { background: #e8fbff; }
+    .icon-orange { background: #fff4e5; }
+
+    .action-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0 0 10px;
+    }
+
+    .action-desc {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0 0 18px;
+      flex-grow: 1;
+    }
+
+    .action-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #eef5fc;
+      color: var(--navy-700);
+    }
+
+    .btn-sm {
+      min-height: 40px;
+      padding: 0 14px;
+      font-size: 14px;
+      border-radius: 10px;
+      background: var(--blue-600);
+      color: #fff;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .list-item {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      background: #fff;
+    }
+
+    .list-item-title {
+      font-weight: 700;
+      margin: 0 0 4px;
+      font-size: 15px;
+    }
+
+    .list-item-meta {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-critical {
+      background: #fdecec;
+      color: #b93232;
+    }
+
+    .status-pending {
+      background: #fff4e5;
+      color: #b87411;
+    }
+
+    .status-review {
+      background: #eaf4ff;
+      color: #1f7ae0;
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .mini-card {
+      background: #fbfdff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .mini-title {
+      margin: 0 0 10px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .mini-text {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .footer-bar {
+      margin-top: 28px;
+      background: linear-gradient(90deg, var(--navy-900), var(--navy-700));
+      color: rgba(255, 255, 255, 0.92);
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+
+    @media (max-width: 1200px) {
+      .kpi-grid,
+      .action-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .main-grid,
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page {
+        padding: 18px 16px 28px;
+      }
+
+      .kpi-grid,
+      .action-grid,
+      .split-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .brand {
+        font-size: 18px;
+      }
+
+      .hero h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="burger" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="brand">ReisKYC<small>™</small></div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="icon-btn">fr ▾</div>
+      <div class="icon-btn">🔔</div>
+      <div class="icon-btn">👤 Admin</div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div>
+        <h1>Bienvenue sur votre espace KYC</h1>
+        <p>
+          Accédez rapidement à vos recherches, suivez les cas en attente et pilotez vos paramètres de filtrage
+          depuis un tableau de bord centré sur vos priorités métier.
+        </p>
+
+        <div class="hero-meta">
+          <div class="meta-chip">Dernière connexion : 14/04/2026 - 08:42</div>
+          <div class="meta-chip">Environnement : Production</div>
+          <div class="meta-chip">Tenant : public</div>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary">Lancer une recherche KYC</a>
+        <a href="#" class="btn btn-secondary">Ouvrir mes cas en attente</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Vue d’ensemble</h2>
+          <p class="section-subtitle">Indicateurs clés pour suivre l’activité et prioriser les actions.</p>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <article class="kpi-card">
+          <div class="kpi-label">Cas en attente</div>
+          <div class="kpi-value">18</div>
+          <div class="kpi-trend trend-warn">+4 depuis hier</div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-label">Alertes critiques</div>
+          <div class="kpi-value">3</div>
+          <div class="kpi-trend trend-down">Traitement prioritaire requis</div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-label">Recherches effectuées</div>
+          <div class="kpi-value">126</div>
+          <div class="kpi-trend trend-up">+12% cette semaine</div>
+        </article>
+
+        <article class="kpi-card">
+          <div class="kpi-label">Filtres actifs</div>
+          <div class="kpi-value">7</div>
+          <div class="kpi-trend trend-up">Configuration à jour</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Actions principales</h2>
+          <p class="section-subtitle">Accès direct aux fonctionnalités les plus utilisées.</p>
+        </div>
+      </div>
+
+      <div class="action-grid">
+        <article class="action-card">
+          <div class="action-icon icon-blue">🔎</div>
+          <h3 class="action-title">Recherche KYC</h3>
+          <p class="action-desc">
+            Lancez une recherche sur les listes de sanctions, PEPs et entités surveillées avec accès direct à l’historique récent.
+          </p>
+          <div class="action-footer">
+            <span class="tag">Action prioritaire</span>
+            <a href="#" class="btn btn-sm">Rechercher</a>
+          </div>
+        </article>
+
+        <article class="action-card">
+          <div class="action-icon icon-cyan">📂</div>
+          <h3 class="action-title">Cas & alertes</h3>
+          <p class="action-desc">
+            Consultez les dossiers en cours, les éléments à revoir et les alertes nécessitant une analyse ou une décision.
+          </p>
+          <div class="action-footer">
+            <span class="tag">Suivi opérationnel</span>
+            <a href="#" class="btn btn-sm">Accéder</a>
+          </div>
+        </article>
+
+        <article class="action-card">
+          <div class="action-icon icon-orange">⚙️</div>
+          <h3 class="action-title">Paramétrage des filtres</h3>
+          <p class="action-desc">
+            Ajustez les règles de filtrage, les seuils de tolérance et les paramètres de recherche selon le contexte métier.
+          </p>
+          <div class="action-footer">
+            <span class="tag">Administration</span>
+            <a href="#" class="btn btn-sm">Paramétrer</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section main-grid">
+      <article class="panel">
+        <div class="panel-body">
+          <div class="section-header">
+            <div>
+              <h2 class="section-title">Mes cas récents</h2>
+              <p class="section-subtitle">Reprendre rapidement les dossiers ouverts ou à traiter.</p>
+            </div>
+          </div>
+
+          <div class="list">
+            <div class="list-item">
+              <div>
+                <p class="list-item-title">Cas #KYC-2026-0142 - Société Atlas Trading</p>
+                <div class="list-item-meta">Assigné à : Admin • Mis à jour il y a 12 min • Source : screening manuel</div>
+              </div>
+              <span class="status status-critical">Critique</span>
+            </div>
+
+            <div class="list-item">
+              <div>
+                <p class="list-item-title">Cas #KYC-2026-0138 - Client personne physique</p>
+                <div class="list-item-meta">Assigné à : Team Compliance • Mis à jour il y a 45 min • En attente de validation</div>
+              </div>
+              <span class="status status-pending">En attente</span>
+            </div>
+
+            <div class="list-item">
+              <div>
+                <p class="list-item-title">Cas #KYC-2026-0129 - Groupe Orion Holdings</p>
+                <div class="list-item-meta">Assigné à : Admin • Mis à jour aujourd’hui • Vérification documentaire en cours</div>
+              </div>
+              <span class="status status-review">À revoir</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-body">
+          <div class="section-header">
+            <div>
+              <h2 class="section-title">Raccourcis métier</h2>
+              <p class="section-subtitle">Accès rapide à l’activité récente et aux tâches prioritaires.</p>
+            </div>
+          </div>
+
+          <div class="split-grid">
+            <div class="mini-card">
+              <h3 class="mini-title">Dernière recherche</h3>
+              <p class="mini-text">
+                Recherche lancée sur “Global Trade Services Ltd” avec 2 correspondances potentielles.
+              </p>
+            </div>
+
+            <div class="mini-card">
+              <h3 class="mini-title">Alerte prioritaire</h3>
+              <p class="mini-text">
+                Une alerte niveau élevé attend une revue de conformité avant clôture.
+              </p>
+            </div>
+
+            <div class="mini-card">
+              <h3 class="mini-title">Tâches du jour</h3>
+              <p class="mini-text">
+                5 dossiers à analyser, 2 validations en attente, 1 paramétrage à confirmer.
+              </p>
+            </div>
+
+            <div class="mini-card">
+              <h3 class="mini-title">État du système</h3>
+              <p class="mini-text">
+                Service opérationnel. Dernière synchronisation des listes : aujourd’hui à 07:15.
+              </p>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <footer class="footer-bar">
+      <div>🔒 Connexion sécurisée • Données protégées • Plateforme REIS KYC</div>
+      <div>Vneuron © Reis™ RCS 5.2.2 725b8cf 725b8cf86</div>
+    </footer>
+  </main>
+</body>
+</html>
